@@ -33,6 +33,6 @@ export function createDefaultTfidfParams(): TfidfParams {
     norm: "l2",
     smoothIdf: true,
     sublinearTf: false,
-    stopWords: "english",
+    stopWords: null,
   };
 }

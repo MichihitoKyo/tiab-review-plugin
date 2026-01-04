@@ -63,7 +63,7 @@ def load_folds(path: Path) -> dict:
 
 def build_cycle() -> tuple[Tfidf, NaiveBayes, Balanced, Max]:
     return (
-        Tfidf(stop_words="english"),
+        Tfidf(),
         NaiveBayes(alpha=3.822),
         Balanced(ratio=1.2),
         Max(),
