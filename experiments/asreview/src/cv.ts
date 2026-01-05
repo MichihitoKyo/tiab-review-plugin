@@ -62,7 +62,13 @@ function runFold(
   labels: Label[],
   testIndices: number[],
   topN: number
-): { top_indices: number[]; top_ids: string[] } {
+): {
+  top_indices: number[];
+  top_ids: string[];
+  top_scores: number[];
+  thr_score: number;
+  tie_count_at_thr: number;
+} {
   const testSet = new Set(testIndices);
   const trainIndices: number[] = [];
   const trainLabels: number[] = [];
@@ -90,9 +96,20 @@ function runFold(
   const topLocal = rankingLocal.slice(0, topN);
 
   const topIndices = topLocal.map((idx) => testIndices[idx]);
+  const topScores = topLocal.map((i) => Number((proba as any)[i]));
+  const thrScore = topScores.length ? topScores[topScores.length - 1] : -Infinity;
+  
+  const probaArr = Array.from(proba as any);
+  const tieCountAtThr = probaArr.filter((p) => p === thrScore).length;
   const topIds = topIndices.map((idx) => getRecordId(records[idx], idx));
 
-  return { top_indices: topIndices, top_ids: topIds };
+  return {
+    top_indices: topIndices,
+    top_ids: topIds,
+    top_scores: topScores,
+    thr_score: thrScore,
+    tie_count_at_thr: tieCountAtThr,
+  };
 }
 
 function main(): void {
@@ -109,6 +126,9 @@ function main(): void {
       test_size: fold.test_indices.length,
       top_indices: result.top_indices,
       top_ids: result.top_ids,
+      top_scores: result.top_scores,
+      thr_score: result.thr_score,
+      tie_count_at_thr: result.tie_count_at_thr,
     };
   });
 

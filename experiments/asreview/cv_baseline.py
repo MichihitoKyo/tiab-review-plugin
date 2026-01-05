@@ -63,7 +63,7 @@ def load_folds(path: Path) -> dict:
 
 def build_cycle() -> tuple[Tfidf, NaiveBayes, Balanced, Max]:
     return (
-        Tfidf(stop_words="english"),
+        Tfidf(stop_words="english", ngram_range=(1, 2)),
         NaiveBayes(alpha=3.822),
         Balanced(ratio=1.2),
         Max(),
@@ -96,10 +96,17 @@ def run_fold(
     top_indices = [test_indices[idx] for idx in top_local]
     top_ids = [str(df.iloc[idx]["id"]) for idx in top_indices]
 
+    top_scores = [float(proba[i]) for i in top_local]
+    thr_score = float(top_scores[-1])
+    tie_count_at_thr = int(np.sum(proba == thr_score))
+
     return {
         "test_size": len(test_indices),
         "top_indices": top_indices,
         "top_ids": top_ids,
+        "top_scores": top_scores,
+        "thr_score": thr_score,
+        "tie_count_at_thr": tie_count_at_thr,
     }
 
 
@@ -133,6 +140,9 @@ def main() -> None:
                 "test_size": result["test_size"],
                 "top_indices": result["top_indices"],
                 "top_ids": result["top_ids"],
+                "top_scores": result["top_scores"],
+                "thr_score": result["thr_score"],
+                "tie_count_at_thr": result["tie_count_at_thr"],
             }
         )
 

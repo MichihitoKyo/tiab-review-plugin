@@ -76,7 +76,7 @@ def build_cycle_elas_u3() -> ActiveLearningCycle:
         querier=Max(),
         classifier=NaiveBayes(alpha=3.822),
         balancer=Balanced(ratio=1.2),
-        feature_extractor=Tfidf(stop_words="english"),
+        feature_extractor=Tfidf(stop_words="english", ngram_range=(1, 2)),
     )
 
 
