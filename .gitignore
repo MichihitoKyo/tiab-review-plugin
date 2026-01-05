@@ -51,3 +51,7 @@ vendor/
 # Experiments
 experiments/results/
 experiments/local_data/
+
+.venv/
+__pycache__/
+experiments/asreview/__pycache__/
